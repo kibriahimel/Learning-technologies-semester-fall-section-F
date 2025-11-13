@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+<head></head>
+
+<body>
+
+    <form id="profileForm" onsubmit="return validateProfile()">
+        <fieldset>
+            <legend>Profile</legend>
+
+            User Id: <input type="text" id="userId" onblur="checkUserId()">
+            <p id="userIdError"></p>
+
+            Picture: <input type="file" id="picture" onchange="checkPicture()">
+            <p id="pictureError"></p>
+
+        </fieldset>
+
+        <input type="submit" value="Submit">
+    </form>
+
+    <script>
+        function isNumeric(str) {
+            if (str.length == 0) return false;
+            for (var i = 0; i < str.length; i++) {
+                var c = str[i];
+                if (c < '0' || c > '9') {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function customToNumber(str) {
+            var num = 0;
+            var len = str.length;
+            for (var i = 0; i < len; i++) {
+                var charVal = str[i] - '0';
+                var power = 1;
+                for (var j = 0; j < (len - 1 - i); j++) {
+                    power = power * 10;
+                }
+                num = num + (charVal * power);
+            }
+            return num;
+        }
+
+        function checkUserId() {
+            var userId = document.getElementById('userId').value;
+            var error = document.getElementById('userIdError');
+            error.innerHTML = "";
+
+            if (userId.length == 0) {
+                error.innerHTML = "User Id cannot be empty.";
+                error.style.color = "red";
+                return;
+            }
+
+            if (!isNumeric(userId)) {
+                error.innerHTML = "User Id must be a number.";
+                error.style.color = "red";
+                return;
+            }
+
+            var num = customToNumber(userId);
+            if (num <= 0) {
+                error.innerHTML = "User Id must be a positive number.";
+                error.style.color = "red";
+                return;
+            }
+        }
+
+        function checkPicture() {
+            var picture = document.getElementById('picture').value;
+            var error = document.getElementById('pictureError');
+
+            if (picture.length == 0) {
+                error.innerHTML = "You must upload a picture.";
+                error.style.color = "red";
+            } else {
+                error.innerHTML = "";
+            }
+        }
+
+        function validateProfile() {
+            var userIdError = document.getElementById('userIdError');
+            var pictureError = document.getElementById('pictureError');
+
+            checkUserId();
+            checkPicture();
+
+            if (userIdError.innerHTML !== "" || pictureError.innerHTML !== "") {
+                return false;
+            }
+
+            alert("✅ Profile is valid and form submitted!");
+            return true;
+        }
+    </script>
+
+</body>
+
+</html>

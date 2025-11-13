@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head></head>
+
+<body>
+
+    <form id="bloodForm" onsubmit="return validateBloodGroup()">
+        <fieldset>
+            <legend>Blood Group</legend>
+            <select id="bloodGroup" onblur="checkBloodGroup()">
+                <option value="">-- Select --</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+            </select>
+        </fieldset>
+
+        <p id="bErr"></p>
+        <input type="submit" value="Submit">
+    </form>
+
+    <script>
+        function checkBloodGroup() {
+            let bloodGroup = document.getElementById('bloodGroup').value;
+            var error = document.getElementById('bErr');
+
+            if (bloodGroup == "") {
+                error.innerHTML = "You must select a blood group.";
+                error.style.color = "red";
+            } else {
+                error.innerHTML = "";
+            }
+        }
+
+        function validateBloodGroup() {
+            var error = document.getElementById('bErr');
+            checkBloodGroup();
+
+            if (error.innerHTML !== "") {
+                return false;
+            }
+
+            alert("Blood Group is selected and form submitted!");
+            return true;
+        }
+    </script>
+
+</body>
+
+</html>

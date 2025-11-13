@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+</head>
+
+<body>
+
+    <form id="nameForm" onsubmit="return validateName()">
+        Name: <input type="text" id="name" name="name" onblur="checkName()">
+        <p id="nErr"></p>
+        <input type="submit" value="Submit">
+    </form>
+
+    <script>
+        function checkName() {
+            let nameVal = document.getElementById('name').value;
+            var nameError = document.getElementById('nErr');
+            let len = nameVal.length;
+            var spaceCount = 0;
+
+            nameError.innerHTML = "";
+
+            if (len == 0) {
+                nameError.innerHTML = "Name cannot be empty.";
+                nameError.style.color = "red";
+                return;
+            }
+
+            let first = nameVal[0];
+            if (!((first >= 'A' && first <= 'Z') || (first >= 'a' && first <= 'z'))) {
+                nameError.innerHTML = "Name must start with a letter.";
+                nameError.style.color = "red";
+                return;
+            }
+
+            for (var i = 0; i < len; i++) {
+                var c = nameVal[i];
+                if (c == ' ') {
+                    spaceCount++;
+                } else if (!((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '.' || c == '-')) {
+                    nameError.innerHTML = "Invalid character used.";
+                    nameError.style.color = "red";
+                    return;
+                }
+            }
+
+            if (spaceCount < 1) {
+                nameError.innerHTML = "Name must contain at least two words.";
+                nameError.style.color = "red";
+                return;
+            }
+
+            nameError.innerHTML = "";
+        }
+
+        function validateName() {
+            var nameError = document.getElementById('nErr');
+            checkName();
+            if (nameError.innerHTML !== "") {
+                return false;
+            }
+            alert("Name is valid and form submitted!");
+            return true;
+        }
+    </script>
+</body>
+
+</html>

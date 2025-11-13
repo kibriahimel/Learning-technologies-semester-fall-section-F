@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head></head>
+
+<body>
+
+    <form id="dateForm" onsubmit="return validateDate()">
+        <fieldset>
+            <legend>Date of Birth</legend>
+            <input type="text" id="dd" name="dd" onblur="checkDate()" style="width:30px;"> /
+            <input type="text" id="mm" name="mm" onblur="checkDate()" style="width:30px;"> /
+            <input type="text" id="yyyy" name="yyyy" onblur="checkDate()" style="width:50px;">
+            <p>(dd / mm / yyyy)</p>
+        </fieldset>
+
+        <p id="dErr"></p>
+        <input type="submit" value="Submit">
+    </form>
+
+    <script>
+        function isNumeric(str) {
+            if (str.length == 0) {
+                return false;
+            }
+            for (var i = 0; i < str.length; i++) {
+                let c = str[i];
+                if (c < '0' || c > '9') {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function customToNumber(str) {
+            var num = 0;
+            let len = str.length;
+            for (var i = 0; i < len; i++) {
+                var charVal = str[i] - '0';
+
+                let power = 1;
+                for (var j = 0; j < (len - 1 - i); j++) {
+                    power = power * 10;
+                }
+
+                num = num + (charVal * power);
+            }
+            return num;
+        }
+
+        function checkDate() {
+            let dayStr = document.getElementById('dd').value;
+            var monthStr = document.getElementById('mm').value;
+            let yearStr = document.getElementById('yyyy').value;
+            var error = document.getElementById('dErr');
+            error.innerHTML = "";
+
+            if (dayStr.length == 0 || monthStr.length == 0 || yearStr.length == 0) {
+                error.innerHTML = "All date fields must be filled.";
+                error.style.color = "red";
+                return;
+            }
+
+            if (!isNumeric(dayStr) || !isNumeric(monthStr) || !isNumeric(yearStr)) {
+                error.innerHTML = "Date fields must contain only numbers.";
+                error.style.color = "red";
+                return;
+            }
+
+            let day = customToNumber(dayStr);
+            var month = customToNumber(monthStr);
+            let year = customToNumber(yearStr);
+
+            if (year < 1900 || year > 2016) {
+                error.innerHTML = "Year must be between 1900 and 2016.";
+                error.style.color = "red";
+                return;
+            }
+
+            if (month < 1 || month > 12) {
+                error.innerHTML = "Month must be between 1 and 12.";
+                error.style.color = "red";
+                return;
+            }
+
+            if (day < 1 || day > 31) {
+                error.innerHTML = "Day must be between 1 and 31.";
+                error.style.color = "red";
+                return;
+            }
+
+            error.innerHTML = "";
+        }
+
+        function validateDate() {
+            var error = document.getElementById('dErr');
+            checkDate();
+
+            if (error.innerHTML !== "") {
+                return false;
+            }
+
+            alert("Date is valid and form submitted!");
+            return true;
+        }
+    </script>
+
+</body>
+
+</html>

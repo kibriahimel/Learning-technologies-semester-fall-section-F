@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+</head>
+
+<body>
+
+    <form id="emailForm" onsubmit="return validateEmail()">
+        Email: <input type="text" id="email" onblur="checkEmail()">
+        <p id="eErr"></p>
+        <input type="submit" value="Submit">
+    </form>
+
+    <script>
+        function checkEmail() {
+            let email = document.getElementById('email').value;
+            var eError = document.getElementById('eErr');
+            let length = email.length;
+            eError.innerHTML = "";
+
+            if (length == 0) {
+                eError.innerHTML = "Email cannot be empty!";
+                eError.style.color = "red";
+                return;
+            }
+
+            let atCount = 0;
+            var atPosition = -1;
+            let lastDotPosition = -1;
+
+            for (var i = 0; i < length; i++) {
+                let c = email[i];
+
+                if (c == ' ') {
+                    eError.innerHTML = "Email cannot contain spaces.";
+                    eError.style.color = "red";
+                    return;
+                }
+
+                if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '@' || c == '.' || c == '-' || c == '_')) {
+                    eError.innerHTML = "Email contains an invalid character.";
+                    eError.style.color = "red";
+                    return;
+                }
+
+                if (c === '@') {
+                    atCount++;
+                    atPosition = i;
+                }
+
+                if (c === '.' && atPosition !== -1) {
+                    lastDotPosition = i;
+                }
+            }
+
+            if (atCount !== 1) {
+                eError.innerHTML = "Email must contain exactly one '@' symbol!";
+                eError.style.color = "red";
+                return;
+            }
+
+            if (atPosition === 0 || atPosition === length - 1) {
+                eError.innerHTML = "'@' cannot be the first or last character!";
+                eError.style.color = "red";
+                return;
+            }
+
+            if (lastDotPosition === -1) {
+                eError.innerHTML = "Email must have a '.' after the '@' symbol!";
+                eError.style.color = "red";
+                return;
+            }
+
+            if (lastDotPosition === atPosition + 1) {
+                eError.innerHTML = "Domain part cannot start with a dot.";
+                eError.style.color = "red";
+                return;
+            }
+
+            if (lastDotPosition === length - 1) {
+                eError.innerHTML = "Email cannot end with a dot.";
+                eError.style.color = "red";
+                return;
+            }
+
+            eError.innerHTML = "";
+        }
+
+        function validateEmail() {
+            var eError = document.getElementById('eErr');
+            checkEmail();
+
+            if (eError.innerHTML !== "") {
+                return false;
+            }
+            alert("Email is valid and form submitted!");
+            return true;
+        }
+    </script>
+</body>
+
+</html>

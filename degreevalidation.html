@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head></head>
+
+<body>
+
+    <form id="degreeForm" onsubmit="return validateDegree()">
+        <fieldset>
+            <legend>Degree</legend>
+            <input type="checkbox" id="ssc" name="ssc" onclick="checkDegree()"> SSC
+            <input type="checkbox" id="hsc" name="hsc" onclick="checkDegree()"> HSC
+            <input type="checkbox" id="bsc" name="bsc" onclick="checkDegree()"> BSC
+        </fieldset>
+
+        <p id="degErr"></p>
+        <input type="submit" value="Submit">
+    </form>
+
+    <script>
+        function checkDegree() {
+            var ssc_checked = document.getElementById('ssc').checked;
+            let hsc_checked = document.getElementById('hsc').checked;
+            var bsc_checked = document.getElementById('bsc').checked;
+            let error = document.getElementById('degErr');
+
+            if (ssc_checked == false && hsc_checked == false && bsc_checked == false) {
+                error.innerHTML = "At least one degree must be selected.";
+                error.style.color = "red";
+            } else {
+                error.innerHTML = "";
+            }
+        }
+
+        function validateDegree() {
+            var error = document.getElementById('degErr');
+            checkDegree();
+
+            if (error.innerHTML !== "") {
+                return false;
+            }
+
+            alert("Degree is selected and form submitted!");
+            return true;
+        }
+    </script>
+
+</body>
+
+</html>

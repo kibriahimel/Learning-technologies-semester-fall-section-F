@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+
+<head></head>
+
+<body>
+
+    <h2>PERSON PROFILE</h2>
+    <form id="profileForm" onsubmit="return validateAll()">
+
+        Name: <input type="text" id="name" onblur="checkName()">
+        <p id="nErr"></p>
+
+        Email: <input type="text" id="email" onblur="checkEmail()">
+        <p id="eErr"></p>
+
+        Gender:
+        <input type="radio" name="gender" value="male" onclick="checkGender()"> Male
+        <input type="radio" name="gender" value="female" onclick="checkGender()"> Female
+        <input type="radio" name="gender" value="other" onclick="checkGender()"> Other
+        <p id="gErr"></p>
+
+        Date of Birth:
+        <input type="text" id="dd" placeholder="dd" onblur="checkDate()" style="width:30px;"> /
+        <input type="text" id="mm" placeholder="mm" onblur="checkDate()" style="width:30px;"> /
+        <input type="text" id="yyyy" placeholder="yyyy" onblur="checkDate()" style="width:50px;">
+        <p id="dErr"></p>
+
+        Blood Group:
+        <select id="bloodGroup" onblur="checkBloodGroup()">
+            <option value="">-- Select --</option>
+            <option value="A+">A+</option>
+            <option value="A-">A-</option>
+            <option value="B+">B+</option>
+            <option value="B-">B-</option>
+            <option value="O+">O+</option>
+            <option value="O-">O-</option>
+            <option value="AB+">AB+</option>
+            <option value="AB-">AB-</option>
+        </select>
+        <p id="bErr"></p>
+
+        Degree:
+        <input type="checkbox" id="ssc" onclick="checkDegree()"> SSC
+        <input type="checkbox" id="hsc" onclick="checkDegree()"> HSC
+        <input type="checkbox" id="bsc" onclick="checkDegree()"> BSc.
+        <input type="checkbox" id="msc" onclick="checkDegree()"> MSc.
+        <p id="degErr"></p>
+
+        Photo: <input type="file" id="photo" onchange="checkPhoto()">
+        <p id="pErr"></p>
+
+        <hr>
+        <input type="submit" value="Submit">
+        <input type="button" value="Reset" onclick="clearForm()">
+
+    </form>
+
+    <script>
+        function isNumeric(str) {
+            if (str.length == 0) return false;
+            for (let i = 0; i < str.length; i++) {
+                var c = str[i];
+                if (c < '0' || c > '9') return false;
+            }
+            return true;
+        }
+
+        function customToNumber(s) {
+            var num = 0;
+            let len = s.length;
+            for (var i = 0; i < len; i++) {
+                let charVal = s[i] - '0';
+                var power = 1;
+                for (let j = 0; j < (len - 1 - i); j++) {
+                    power = power * 10;
+                }
+                num = num + (charVal * power);
+            }
+            return num;
+        }
+
+        function checkName() {
+            let nameVal = document.getElementById('name').value;
+            var nameError = document.getElementById('nErr');
+            let length = nameVal.length;
+            var spaceCount = 0;
+            nameError.innerHTML = "";
+
+            if (length == 0) {
+                nameError.innerHTML = "Name cannot be empty.";
+                nameError.style.color = "red";
+                return;
+            }
+            let first = nameVal[0];
+            if (!((first >= 'A' && first <= 'Z') || (first >= 'a' && first <= 'z'))) {
+                nameError.innerHTML = "Name must start with a letter.";
+                nameError.style.color = "red";
+                return;
+            }
+            for (var i = 0; i < length; i++) {
+                let c = nameVal[i];
+                if (c == ' ') {
+                    spaceCount++;
+                } else if (!((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '.' || c == '-')) {
+                    nameError.innerHTML = "Invalid character used.";
+                    nameError.style.color = "red";
+                    return;
+                }
+            }
+            if (spaceCount < 1) {
+                nameError.innerHTML = "Name must contain at least two words.";
+                nameError.style.color = "red";
+                return;
+            }
+        }
+
+        function checkEmail() {
+            var email = document.getElementById('email').value;
+            let emailError = document.getElementById('eErr');
+            var length = email.length;
+            emailError.innerHTML = "";
+
+            if (length == 0) {
+                emailError.innerHTML = "Email cannot be empty.";
+                emailError.style.color = "red";
+                return;
+            }
+
+            let atCount = 0;
+            var atPosition = -1;
+            let dotAfterAt = false;
+            var dotPosition = -1;
+
+            for (let i = 0; i < length; i++) {
+                var c = email[i];
+                if (c == '@') {
+                    atCount++;
+                    atPosition = i;
+                }
+                if (c == ' ') {
+                    emailError.innerHTML = "Email cannot contain spaces.";
+                    emailError.style.color = "red";
+                    return;
+                }
+            }
+            if (atCount != 1) {
+                emailError.innerHTML = "Email must contain exactly one '@' symbol.";
+                emailError.style.color = "red";
+                return;
+            }
+            if (atPosition == 0 || atPosition == length - 1) {
+                emailError.innerHTML = "'@' cannot be at the beginning or end.";
+                emailError.style.color = "red";
+                return;
+            }
+            for (var j = atPosition + 1; j < length; j++) {
+                if (email[j] == '.') {
+                    dotAfterAt = true;
+                    dotPosition = j;
+                    break;
+                }
+            }
+            if (!dotAfterAt) {
+                emailError.innerHTML = "Must have at least one '.' after the '@'.";
+                emailError.style.color = "red";
+                return;
+            }
+            if (dotPosition == length - 1) {
+                emailError.innerHTML = "Email cannot end with a '.'.";
+                emailError.style.color = "red";
+                return;
+            }
+        }
+
+        function checkGender() {
+            var radios = document.getElementsByName('gender');
+            let error = document.getElementById('gErr');
+            var isSelected = false;
+            for (let i = 0; i < radios.length; i++) {
+                if (radios[i].checked) {
+                    isSelected = true;
+                    break;
+                }
+            }
+            if (isSelected) {
+                error.innerHTML = "";
+            } else {
+                error.innerHTML = "At least one gender must be selected.";
+                error.style.color = "red";
+            }
+        }
+
+        function checkDate() {
+            var dayStr = document.getElementById('dd').value;
+            let monthStr = document.getElementById('mm').value;
+            var yearStr = document.getElementById('yyyy').value;
+            let error = document.getElementById('dErr');
+            error.innerHTML = "";
+
+            if (dayStr.length == 0 || monthStr.length == 0 || yearStr.length == 0) {
+                error.innerHTML = "All date fields must be filled.";
+                error.style.color = "red";
+                return;
+            }
+            if (!isNumeric(dayStr) || !isNumeric(monthStr) || !isNumeric(yearStr)) {
+                error.innerHTML = "Date fields must contain only numbers.";
+                error.style.color = "red";
+                return;
+            }
+            var day = customToNumber(dayStr);
+            let month = customToNumber(monthStr);
+            var year = customToNumber(yearStr);
+
+            if (year < 1900 || year > 2016) {
+                error.innerHTML = "Year must be between 1900 and 2016.";
+                error.style.color = "red";
+                return;
+            }
+            if (month < 1 || month > 12) {
+                error.innerHTML = "Month must be between 1 and 12.";
+                error.style.color = "red";
+                return;
+            }
+            if (day < 1 || day > 31) {
+                error.innerHTML = "Day must be between 1 and 31.";
+                error.style.color = "red";
+                return;
+            }
+        }
+
+        function checkBloodGroup() {
+            let bloodGroup = document.getElementById('bloodGroup').value;
+            var error = document.getElementById('bErr');
+            if (bloodGroup == "") {
+                error.innerHTML = "You must select a blood group.";
+                error.style.color = "red";
+            } else {
+                error.innerHTML = "";
+            }
+        }
+
+        function checkDegree() {
+            var ssc = document.getElementById('ssc').checked;
+            let hsc = document.getElementById('hsc').checked;
+            var bsc = document.getElementById('bsc').checked;
+            let msc = document.getElementById('msc').checked;
+            var error = document.getElementById('degErr');
+
+            if (ssc == false && hsc == false && bsc == false && msc == false) {
+                error.innerHTML = "At least one degree must be selected.";
+                error.style.color = "red";
+            } else {
+                error.innerHTML = "";
+            }
+        }
+
+        function checkPhoto() {
+            let photo = document.getElementById('photo').value;
+            var error = document.getElementById('pErr');
+            if (photo.length == 0) {
+                error.innerHTML = "You must upload a photo.";
+                error.style.color = "red";
+            } else {
+                error.innerHTML = "";
+            }
+        }
+
+        function clearForm() {
+            document.getElementById('profileForm').reset();
+
+            document.getElementById('nErr').innerHTML = "";
+            document.getElementById('eErr').innerHTML = "";
+            document.getElementById('gErr').innerHTML = "";
+            document.getElementById('dErr').innerHTML = "";
+            document.getElementById('bErr').innerHTML = "";
+            document.getElementById('degErr').innerHTML = "";
+            document.getElementById('pErr').innerHTML = "";
+        }
+
+        function validateAll() {
+            checkName();
+            checkEmail();
+            checkGender();
+            checkDate();
+            checkBloodGroup();
+            checkDegree();
+            checkPhoto();
+
+            if (document.getElementById('nErr').innerHTML !== "" ||
+                document.getElementById('eErr').innerHTML !== "" ||
+                document.getElementById('gErr').innerHTML !== "" ||
+                document.getElementById('dErr').innerHTML !== "" ||
+                document.getElementById('bErr').innerHTML !== "" ||
+                document.getElementById('degErr').innerHTML !== "" ||
+                document.getElementById('pErr').innerHTML !== "") {
+                return false;
+            }
+
+            alert("Person Profile is valid and form submitted!");
+            return true;
+        }
+    </script>
+
+</body>
+
+</html>
